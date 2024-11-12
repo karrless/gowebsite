@@ -1,8 +1,13 @@
 package config
 
-import "github.com/ilyakaznacheev/cleanenv"
+import (
+	"gowebsite/pkg/db/postgres"
+
+	"github.com/ilyakaznacheev/cleanenv"
+)
 
 type Config struct {
+	postgres.PostgresConfig
 }
 
 func New() *Config {
