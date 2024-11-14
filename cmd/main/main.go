@@ -16,9 +16,9 @@ func main() {
 	ctx := context.Background()
 	mainLogger := logger.New()
 	ctx = context.WithValue(ctx, logger.LoggerKey, mainLogger)
-	mainLogger.Debug(ctx, "Application is starting...")
+	mainLogger.Info(ctx, "Application is starting...")
 
-	cfg := config.New()
+	cfg := config.New("")
 	if cfg == nil {
 		mainLogger.Fatal(ctx, "failed to load config")
 	}
@@ -32,5 +32,6 @@ func main() {
 	signal.Notify(graceChannel, syscall.SIGINT, syscall.SIGTERM)
 	<-graceChannel
 	db.Close()
+	mainLogger.Debug(ctx, "Database connection closed")
 	mainLogger.Info(ctx, "Graceful shutdown!")
 }

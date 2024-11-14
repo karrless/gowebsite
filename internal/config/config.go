@@ -10,9 +10,12 @@ type Config struct {
 	postgres.PostgresConfig
 }
 
-func New() *Config {
+func New(path string) *Config {
 	cfg := Config{}
-	err := cleanenv.ReadConfig("./configs/.env", &cfg)
+	if path == "" {
+		path = "./configs/.env"
+	}
+	err := cleanenv.ReadConfig(path, &cfg)
 
 	if err != nil {
 		return nil
