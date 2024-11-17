@@ -1,0 +1,579 @@
+definitions:
+  models.Language:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      svg:
+        type: string
+    type: object
+  models.Project:
+    properties:
+      GHLink:
+        type: string
+      HTTPLink:
+        type: string
+      TGLink:
+        type: string
+      dscription:
+        type: string
+      id:
+        type: integer
+      isActive:
+        type: boolean
+      isArchived:
+        type: boolean
+      isDeveloping:
+        type: boolean
+      language:
+        $ref: '#/definitions/models.Language'
+      languageID:
+        type: integer
+      title:
+        type: string
+      version:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /portfolio/languages:
+    get:
+      consumes:
+      - application/json
+      description: Получить список всех языков программирования из базы данных
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о языке
+          schema:
+            items:
+              $ref: '#/definitions/models.Language'
+            type: array
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Список ЯП
+      tags:
+      - Portfolio
+    post:
+      consumes:
+      - application/json
+      description: Создать язык программирования и записать в базу данных
+      parameters:
+      - description: Language name
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: Language svg
+        in: body
+        name: svg
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о языке
+          schema:
+            $ref: '#/definitions/models.Language'
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Создать ЯП
+      tags:
+      - Portfolio
+  /portfolio/languages/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удалить язык программирования из базы данных
+      parameters:
+      - description: Language ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Сообщение о успешном удалении языка
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "404":
+          description: ЯП не найден
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Удалить ЯП
+      tags:
+      - Portfolio
+    get:
+      consumes:
+      - application/json
+      description: Получить язык программирования из базы данных
+      parameters:
+      - description: Language ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о языке
+          schema:
+            $ref: '#/definitions/models.Language'
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "404":
+          description: Язык программирования не найден
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Язык программирования
+      tags:
+      - Portfolio
+    patch:
+      consumes:
+      - application/json
+      description: Обновить язык программирования и записать в базу данных
+      parameters:
+      - description: Language ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Language name
+        in: body
+        name: name
+        schema:
+          type: string
+      - description: Language svg
+        in: body
+        name: svg
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о языке
+          schema:
+            $ref: '#/definitions/models.Language'
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "404":
+          description: ЯП не найден
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Обновить ЯП
+      tags:
+      - Portfolio
+    put:
+      consumes:
+      - application/json
+      description: Заменить язык программирования и записать в базу данных
+      parameters:
+      - description: Language ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Language name
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: Language svg
+        in: body
+        name: svg
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о языке
+          schema:
+            $ref: '#/definitions/models.Language'
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Заменить ЯП
+      tags:
+      - Portfolio
+  /portfolio/projects:
+    get:
+      consumes:
+      - application/json
+      description: Получить список всех проектов из базы данных
+      parameters:
+      - description: Language ID
+        in: query
+        name: lang_id
+        type: integer
+      - description: Is active
+        in: query
+        name: is_active
+        type: boolean
+      - description: Is archived
+        in: query
+        name: is_archived
+        type: boolean
+      - description: Is developing
+        in: query
+        name: is_developing
+        type: boolean
+      - description: Sort field
+        in: query
+        name: sort_field
+        type: string
+      - description: Sort order
+        in: query
+        name: sort_order
+        type: string
+      - description: Limit of projects
+        in: query
+        name: limit
+        type: integer
+      - description: Offset of projects
+        in: query
+        name: Offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о проекте
+          schema:
+            items:
+              $ref: '#/definitions/models.Project'
+            type: array
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Список проектов
+      tags:
+      - Portfolio
+    post:
+      consumes:
+      - application/json
+      description: Создать проект и записать в базу данных
+      parameters:
+      - description: Project title
+        in: body
+        name: title
+        required: true
+        schema:
+          type: string
+      - description: Project version
+        in: body
+        name: version
+        required: true
+        schema:
+          type: string
+      - description: Project description
+        in: body
+        name: description
+        required: true
+        schema:
+          type: string
+      - description: Language ID
+        in: body
+        name: language_id
+        required: true
+        schema:
+          type: integer
+      - description: Is active
+        in: body
+        name: isActive
+        required: true
+        schema:
+          type: boolean
+      - description: Is archived
+        in: body
+        name: isArchived
+        required: true
+        schema:
+          type: boolean
+      - description: Is developing
+        in: body
+        name: isDeveloping
+        required: true
+        schema:
+          type: boolean
+      - description: GitHub link
+        in: body
+        name: GHLink
+        schema:
+          type: string
+      - description: Telegram link
+        in: body
+        name: TGLink
+        schema:
+          type: string
+      - description: HTTP link
+        in: body
+        name: HTTPLink
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о проекте
+          schema:
+            $ref: '#/definitions/models.Project'
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Создать Проект
+      tags:
+      - Portfolio
+  /portfolio/projects/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удалить проект из базы данных
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Сообщение о успешном удалении проекта
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Удалить Проект
+      tags:
+      - Portfolio
+    get:
+      consumes:
+      - application/json
+      description: Получить проект из базы данных
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о проекте
+          schema:
+            $ref: '#/definitions/models.Project'
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "404":
+          description: Проект не найден
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Проект
+      tags:
+      - Portfolio
+    patch:
+      consumes:
+      - application/json
+      description: Обновить проект и записать в базу данных
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Project title
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: Project version
+        in: body
+        name: version
+        schema:
+          type: string
+      - description: Project description
+        in: body
+        name: description
+        schema:
+          type: string
+      - description: Language ID
+        in: body
+        name: language_id
+        schema:
+          type: integer
+      - description: Is active
+        in: body
+        name: isActive
+        schema:
+          type: boolean
+      - description: Is archived
+        in: body
+        name: isArchived
+        schema:
+          type: boolean
+      - description: Is developing
+        in: body
+        name: isDeveloping
+        schema:
+          type: boolean
+      - description: GitHub link
+        in: body
+        name: GHLink
+        schema:
+          type: string
+      - description: Telegram link
+        in: body
+        name: TGLink
+        schema:
+          type: string
+      - description: HTTP link
+        in: body
+        name: HTTPLink
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о проекте
+          schema:
+            $ref: '#/definitions/models.Project'
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "404":
+          description: Проект не найден
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Обновить Проект
+      tags:
+      - Portfolio
+    put:
+      consumes:
+      - application/json
+      description: Заменить проект и записать в базу данных
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Project title
+        in: body
+        name: title
+        required: true
+        schema:
+          type: string
+      - description: Project version
+        in: body
+        name: version
+        required: true
+        schema:
+          type: string
+      - description: Project description
+        in: body
+        name: description
+        required: true
+        schema:
+          type: string
+      - description: Language ID
+        in: body
+        name: language_id
+        required: true
+        schema:
+          type: integer
+      - description: Is active
+        in: body
+        name: isActive
+        required: true
+        schema:
+          type: boolean
+      - description: Is archived
+        in: body
+        name: isArchived
+        required: true
+        schema:
+          type: boolean
+      - description: Is developing
+        in: body
+        name: isDeveloping
+        required: true
+        schema:
+          type: boolean
+      - description: GitHub link
+        in: body
+        name: GHLink
+        schema:
+          type: string
+      - description: Telegram link
+        in: body
+        name: TGLink
+        schema:
+          type: string
+      - description: HTTP link
+        in: body
+        name: HTTPLink
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о проекте
+          schema:
+            $ref: '#/definitions/models.Project'
+        "400":
+          description: Невалидные данные
+          schema: {}
+        "500":
+          description: Внутренняя ошибка сервера
+          schema: {}
+      summary: Заменить Проект
+      tags:
+      - Portfolio
+swagger: "2.0"
