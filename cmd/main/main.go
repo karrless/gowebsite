@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"gowebsite/internal/config"
+	"gowebsite/internal/transport/rest"
 	"gowebsite/pkg/db/postgres"
 	"gowebsite/pkg/logger"
 	"os"
@@ -28,8 +29,18 @@ func main() {
 		mainLogger.Fatal(ctx, "failed to connect to database", zap.Error(err))
 	}
 	mainLogger.Debug(ctx, "Database connected")
+
+	RESTServer := rest.NewRESTServer(ctx, db, cfg.RESTServerPort)
+
+	go func() {
+		if err := RESTServer.Run(ctx); err != nil {
+			mainLogger.Fatal(ctx, "failed to start server", zap.Error(err))
+		}
+	}()
+
 	graceChannel := make(chan os.Signal, 1)
 	signal.Notify(graceChannel, syscall.SIGINT, syscall.SIGTERM)
+
 	<-graceChannel
 	db.Close()
 	mainLogger.Debug(ctx, "Database connection closed")
