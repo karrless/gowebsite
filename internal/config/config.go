@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	postgres.PostgresConfig
+	RESTServerPort string `env:"REST_SERVER_PORT" envDefault:"8080"`
 }
 
 func New(path string) *Config {

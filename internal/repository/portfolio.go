@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"gowebsite/internal/models"
 	"gowebsite/pkg/db/postgres"
@@ -41,6 +42,9 @@ func (repo *PortfolioRepository) GetLanguage(ctx context.Context, id int64) (*mo
 		RunWith(repo.DB.DB).
 		QueryRow().Scan(&result.ID, &result.Name, &result.Svg)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("repository.GetLanguage: %v", err)
 	}
 	return &result, nil
@@ -52,12 +56,15 @@ func (repo *PortfolioRepository) ListLanguages(ctx context.Context) ([]*models.L
 		From("languages").
 		RunWith(repo.DB.DB).Query()
 	if err != nil {
-		return nil, fmt.Errorf("repository.GetLanguages: %v", err)
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return result, fmt.Errorf("repository.ListLanguages: %v", err)
 	}
 	for rows.Next() {
 		var language models.Language
 		if err := rows.Scan(&language.ID, &language.Name, &language.Svg); err != nil {
-			return nil, fmt.Errorf("repository.GetLanguages: %v", err)
+			return nil, fmt.Errorf("repository.ListLanguages: %v", err)
 		}
 		result = append(result, &language)
 	}
@@ -86,6 +93,7 @@ func (repo *PortfolioRepository) DeleteLanguage(ctx context.Context, id int64) e
 		PlaceholderFormat(sq.Dollar).
 		RunWith(repo.DB.DB).Query()
 	if err != nil {
+
 		return fmt.Errorf("repository.DeleteLanguage: %v", err)
 	}
 	return nil
@@ -123,6 +131,9 @@ func (repo *PortfolioRepository) GetProject(ctx context.Context, id int64) (*mod
 		QueryRow().
 		Scan(&result.ID, &result.Title, &result.Version, &result.Description, &result.LanguageID, &result.IsActive, &result.IsArchived, &result.IsDeveloping, &result.GHLink, &result.TGLink, &result.HTTPLink, &lang.ID, &lang.Name, &lang.Svg)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("repository.GetProject: %v", err)
 	}
 	result.Language = &lang
@@ -148,6 +159,9 @@ func (repo *PortfolioRepository) ListProjects(ctx context.Context, filter *model
 	query = query.PlaceholderFormat(sq.Dollar)
 
 	if filter.SortField != "" {
+		if filter.SortOrder == "" {
+			filter.SortOrder = "ASC"
+		}
 		query = query.OrderBy(
 			fmt.Sprintf("%s %s", filter.SortField, filter.SortOrder),
 			"projects.title ASC",
@@ -162,6 +176,9 @@ func (repo *PortfolioRepository) ListProjects(ctx context.Context, filter *model
 	}
 	rows, err := query.RunWith(repo.DB.DB).Query()
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return result, nil
+		}
 		return nil, fmt.Errorf("repository.ListProjects: %v", err)
 	}
 	for rows.Next() {
@@ -177,8 +194,9 @@ func (repo *PortfolioRepository) ListProjects(ctx context.Context, filter *model
 	return result, nil
 }
 
-func (repo *PortfolioRepository) UpdateProject(ctx context.Context, project *models.Project) error {
-	_, err := sq.Update("projects").
+func (repo *PortfolioRepository) UpdateProject(ctx context.Context, project *models.Project) (*models.Project, error) {
+	var result models.Project
+	err := sq.Update("projects").
 		Set("title", project.Title).
 		Set("version", project.Version).
 		Set("description", project.Description).
@@ -189,13 +207,19 @@ func (repo *PortfolioRepository) UpdateProject(ctx context.Context, project *mod
 		Set("tg_link", project.TGLink).
 		Set("http_link", project.HTTPLink).
 		Where(sq.Eq{"id": project.ID}).
+		Suffix("RETURNING *").
 		PlaceholderFormat(sq.Dollar).
 		RunWith(repo.DB.DB).
-		Exec()
+		QueryRow().Scan(&result.ID, &result.Title, &result.Version, &result.Description, &result.LanguageID, &result.IsActive, &result.IsArchived, &result.IsDeveloping, &result.GHLink, &result.TGLink, &result.HTTPLink)
 	if err != nil {
-		return fmt.Errorf("repository.UpdateProject: %v", err)
+		return nil, fmt.Errorf("repository.UpdateProject: %v", err)
 	}
-	return nil
+	lang, err := repo.GetLanguage(ctx, project.LanguageID)
+	if err != nil {
+		return nil, fmt.Errorf("repository.UpdateProject: %v", err)
+	}
+	result.Language = lang
+	return &result, nil
 }
 
 func (repo *PortfolioRepository) DeleteProject(ctx context.Context, id int64) error {
@@ -208,4 +232,81 @@ func (repo *PortfolioRepository) DeleteProject(ctx context.Context, id int64) er
 		return fmt.Errorf("repository.DeleteProject: %v", err)
 	}
 	return nil
+}
+
+func (repo *PortfolioRepository) PatchLanguage(ctx context.Context, language *models.Language, languageUpdate *models.Language) (*models.Language, error) {
+	var result models.Language
+
+	query := sq.Update("languages").Where(sq.Eq{"id": language.ID}).Suffix("RETURNING *").PlaceholderFormat(sq.Dollar)
+
+	if languageUpdate.Name != "" {
+		query = query.Set("name", languageUpdate.Name)
+	}
+
+	if languageUpdate.Svg.Valid {
+		query = query.Set("svg", languageUpdate.Svg)
+	}
+
+	err := query.RunWith(repo.DB.DB).QueryRow().Scan(&result.ID, &result.Name, &result.Svg)
+	if err != nil {
+		return nil, fmt.Errorf("repository.PatchLanguage: %v", err)
+	}
+	return &result, nil
+}
+
+func (repo *PortfolioRepository) PatchProject(ctx context.Context, project *models.Project, projectUpdate *models.Project) (*models.Project, error) {
+	var result models.Project
+
+	query := sq.Update("projects").Where(sq.Eq{"id": project.ID}).Suffix("RETURNING *").PlaceholderFormat(sq.Dollar)
+
+	if projectUpdate.Title != "" {
+		query = query.Set("title", projectUpdate.Title)
+	}
+
+	if projectUpdate.Version != "" {
+		query = query.Set("version", projectUpdate.Version)
+	}
+
+	if projectUpdate.Description != "" {
+		query = query.Set("description", projectUpdate.Description)
+	}
+	if projectUpdate.LanguageID != 0 {
+		query = query.Set("language_id", projectUpdate.LanguageID)
+	}
+
+	if projectUpdate.IsActive.Valid {
+		query = query.Set("is_active", projectUpdate.IsActive)
+	}
+
+	if projectUpdate.IsArchived.Valid {
+		query = query.Set("is_archived", projectUpdate.IsArchived)
+	}
+
+	if projectUpdate.IsDeveloping.Valid {
+		query = query.Set("is_developing", projectUpdate.IsDeveloping)
+	}
+
+	if projectUpdate.GHLink.Valid {
+		query = query.Set("gh_link", projectUpdate.GHLink)
+	}
+
+	if projectUpdate.TGLink.Valid {
+		query = query.Set("tg_link", projectUpdate.TGLink)
+	}
+
+	if projectUpdate.HTTPLink.Valid {
+		query = query.Set("http_link", projectUpdate.HTTPLink)
+	}
+	err := query.RunWith(repo.DB.DB).
+		QueryRow().Scan(&result.ID, &result.Title, &result.Version, &result.Description, &result.LanguageID, &result.IsActive, &result.IsArchived, &result.IsDeveloping, &result.GHLink, &result.TGLink, &result.HTTPLink)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("repository.UpdateProject: %v", err)
+	}
+	lang, err := repo.GetLanguage(ctx, project.LanguageID)
+	if err != nil {
+		return nil, fmt.Errorf("repository.UpdateProject: %v", err)
+	}
+	result.Language = lang
+	return &result, nil
 }
