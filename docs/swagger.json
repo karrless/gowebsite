@@ -1,0 +1,871 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/portfolio/languages": {
+            "get": {
+                "description": "Получить список всех языков программирования из базы данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Список ЯП",
+                "responses": {
+                    "200": {
+                        "description": "Информация о языке",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Language"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            },
+            "post": {
+                "description": "Создать язык программирования и записать в базу данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Создать ЯП",
+                "parameters": [
+                    {
+                        "description": "Language name",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Language svg",
+                        "name": "svg",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о языке",
+                        "schema": {
+                            "$ref": "#/definitions/models.Language"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/portfolio/languages/{id}": {
+            "get": {
+                "description": "Получить язык программирования из базы данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Язык программирования",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Language ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о языке",
+                        "schema": {
+                            "$ref": "#/definitions/models.Language"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Язык программирования не найден",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            },
+            "put": {
+                "description": "Заменить язык программирования и записать в базу данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Заменить ЯП",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Language ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Language name",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Language svg",
+                        "name": "svg",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о языке",
+                        "schema": {
+                            "$ref": "#/definitions/models.Language"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удалить язык программирования из базы данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Удалить ЯП",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Language ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Сообщение о успешном удалении языка",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "ЯП не найден",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            },
+            "patch": {
+                "description": "Обновить язык программирования и записать в базу данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Обновить ЯП",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Language ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Language name",
+                        "name": "name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Language svg",
+                        "name": "svg",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о языке",
+                        "schema": {
+                            "$ref": "#/definitions/models.Language"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "ЯП не найден",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/portfolio/projects": {
+            "get": {
+                "description": "Получить список всех проектов из базы данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Список проектов",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Language ID",
+                        "name": "lang_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is active",
+                        "name": "is_active",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is archived",
+                        "name": "is_archived",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is developing",
+                        "name": "is_developing",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field",
+                        "name": "sort_field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort order",
+                        "name": "sort_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit of projects",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset of projects",
+                        "name": "Offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о проекте",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Project"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            },
+            "post": {
+                "description": "Создать проект и записать в базу данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Создать Проект",
+                "parameters": [
+                    {
+                        "description": "Project title",
+                        "name": "title",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Project version",
+                        "name": "version",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Project description",
+                        "name": "description",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Language ID",
+                        "name": "language_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Is active",
+                        "name": "isActive",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Is archived",
+                        "name": "isArchived",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Is developing",
+                        "name": "isDeveloping",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "GitHub link",
+                        "name": "GHLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Telegram link",
+                        "name": "TGLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "HTTP link",
+                        "name": "HTTPLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о проекте",
+                        "schema": {
+                            "$ref": "#/definitions/models.Project"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/portfolio/projects/{id}": {
+            "get": {
+                "description": "Получить проект из базы данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Проект",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о проекте",
+                        "schema": {
+                            "$ref": "#/definitions/models.Project"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Проект не найден",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            },
+            "put": {
+                "description": "Заменить проект и записать в базу данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Заменить Проект",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Project title",
+                        "name": "title",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Project version",
+                        "name": "version",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Project description",
+                        "name": "description",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Language ID",
+                        "name": "language_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Is active",
+                        "name": "isActive",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Is archived",
+                        "name": "isArchived",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Is developing",
+                        "name": "isDeveloping",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "GitHub link",
+                        "name": "GHLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Telegram link",
+                        "name": "TGLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "HTTP link",
+                        "name": "HTTPLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о проекте",
+                        "schema": {
+                            "$ref": "#/definitions/models.Project"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удалить проект из базы данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Удалить Проект",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Сообщение о успешном удалении проекта",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            },
+            "patch": {
+                "description": "Обновить проект и записать в базу данных",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Обновить Проект",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Project title",
+                        "name": "title",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Project version",
+                        "name": "version",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Project description",
+                        "name": "description",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Language ID",
+                        "name": "language_id",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Is active",
+                        "name": "isActive",
+                        "in": "body",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Is archived",
+                        "name": "isArchived",
+                        "in": "body",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Is developing",
+                        "name": "isDeveloping",
+                        "in": "body",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "GitHub link",
+                        "name": "GHLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Telegram link",
+                        "name": "TGLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "HTTP link",
+                        "name": "HTTPLink",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о проекте",
+                        "schema": {
+                            "$ref": "#/definitions/models.Project"
+                        }
+                    },
+                    "400": {
+                        "description": "Невалидные данные",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Проект не найден",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {}
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Language": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "svg": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Project": {
+            "type": "object",
+            "properties": {
+                "GHLink": {
+                    "type": "string"
+                },
+                "HTTPLink": {
+                    "type": "string"
+                },
+                "TGLink": {
+                    "type": "string"
+                },
+                "dscription": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "isArchived": {
+                    "type": "boolean"
+                },
+                "isDeveloping": {
+                    "type": "boolean"
+                },
+                "language": {
+                    "$ref": "#/definitions/models.Language"
+                },
+                "languageID": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
