@@ -1,0 +1,7 @@
+ALTER TABLE IF EXISTS public.projects
+ALTER COLUMN is_active SET NOT NULL,
+ALTER COLUMN is_archived SET NOT NULL,
+ALTER COLUMN is_developing SET NOT NULL,
+ADD gh_link TEXT NULL,
+ADD tg_link TEXT NULL,
+ADD http_link TEXT NULL;
