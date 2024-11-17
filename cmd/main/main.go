@@ -30,7 +30,7 @@ func main() {
 	}
 	mainLogger.Debug(ctx, "Database connected")
 
-	RESTServer := rest.NewRESTServer(ctx, db, cfg.RESTServerPort)
+	RESTServer := rest.NewRESTServer(ctx, db, cfg.RESTServerPort, cfg.RESTServerHost)
 
 	go func() {
 		if err := RESTServer.Run(ctx); err != nil {

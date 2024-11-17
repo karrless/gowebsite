@@ -16,15 +16,16 @@ type RESTServer struct {
 	port string
 }
 
-func NewRESTServer(ctx context.Context, db *postgres.DB, port string) *RESTServer {
+func NewRESTServer(ctx context.Context, db *postgres.DB, port, host string) *RESTServer {
 	r := gin.Default()
 
-	r.SetTrustedProxies([]string{"127.0.0.1", "192.168.31.157"})
+	r.SetTrustedProxies([]string{"127.0.0.1", host})
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	docs.SwaggerInfo.Host = "localhost:" + port
 	docs.SwaggerInfo.Title = "KarrlessGo API"
 	docs.SwaggerInfo.Description = "API for Karrless.ru website"
-	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Version = "0.1.0"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	r.GET("/ping", func(c *gin.Context) { c.String(200, "pong") })
 
