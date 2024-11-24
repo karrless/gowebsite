@@ -6,18 +6,16 @@ import (
 )
 
 type OrderRepo interface {
-	ListLanguages(context.Context) ([]*models.Language, error)
-	ListProjects(context.Context, *models.ProjectFilter) ([]*models.Project, error)
-	CreateLanguage(context.Context, *models.Language) (*models.Language, error)
-	CreateProject(context.Context, *models.Project) (*models.Project, error)
-	GetLanguage(context.Context, int64) (*models.Language, error)
-	GetProject(context.Context, int64) (*models.Project, error)
-	UpdateLanguage(context.Context, *models.Language) (*models.Language, error)
-	UpdateProject(context.Context, *models.Project) (*models.Project, error)
-	PatchLanguage(context.Context, *models.Language, *models.Language) (*models.Language, error)
-	PatchProject(context.Context, *models.Project, *models.Project) (*models.Project, error)
-	DeleteLanguage(context.Context, int64) error
-	DeleteProject(context.Context, int64) error
+	CreateTechnology(ctx context.Context, technology *models.Technology) (int64, error)
+	GetTechnology(ctx context.Context, id int64) (*models.Technology, error)
+	ListTechnologies(ctx context.Context, filter *models.TechnologyFilter) ([]*models.Technology, error)
+	DeleteTechnology(ctx context.Context, id int64) error
+	PatchTechnology(ctx context.Context, technology *models.Technology) error
+	CreateProject(ctx context.Context, project *models.Project) (int64, error)
+	GetProject(ctx context.Context, id int64) (*models.Project, error)
+	ListProjects(ctx context.Context, filter *models.ProjectFilter) ([]*models.Project, error)
+	DeleteProject(ctx context.Context, id int64) error
+	PatchProject(ctx context.Context, project *models.Project, projectUpdate *models.Project) error
 }
 
 type PortfolioService struct {
@@ -28,50 +26,43 @@ func NewPortfolioService(repo OrderRepo) *PortfolioService {
 	return &PortfolioService{portfolioRepo: repo}
 }
 
-func (r *PortfolioService) GetLanguage(ctx context.Context, id int64) (*models.Language, error) {
-	return r.portfolioRepo.GetLanguage(ctx, id)
+func (s *PortfolioService) CreateTechnology(ctx context.Context, technology *models.Technology) (int64, error) {
+	return s.portfolioRepo.CreateTechnology(ctx, technology)
 }
 
-func (r *PortfolioService) GetProject(ctx context.Context, id int64) (*models.Project, error) {
-	return r.portfolioRepo.GetProject(ctx, id)
+func (s *PortfolioService) GetTechnology(ctx context.Context, id int64) (*models.Technology, error) {
+	return s.portfolioRepo.GetTechnology(ctx, id)
 }
 
-func (r *PortfolioService) ListLanguages(ctx context.Context) ([]*models.Language, error) {
-	return r.portfolioRepo.ListLanguages(ctx)
+func (s *PortfolioService) ListTechnologies(ctx context.Context, filter *models.TechnologyFilter) ([]*models.Technology, error) {
+	return s.portfolioRepo.ListTechnologies(ctx, filter)
 }
 
-func (r *PortfolioService) ListProjects(ctx context.Context, filter *models.ProjectFilter) ([]*models.Project, error) {
-	return r.portfolioRepo.ListProjects(ctx, filter)
+func (s *PortfolioService) DeleteTechnology(ctx context.Context, id int64) error {
+	return s.portfolioRepo.DeleteTechnology(ctx, id)
 }
 
-func (r *PortfolioService) CreateLanguage(ctx context.Context, language *models.Language) (*models.Language, error) {
-	return r.portfolioRepo.CreateLanguage(ctx, language)
+func (s *PortfolioService) PatchTechnology(ctx context.Context, technology *models.Technology) error {
+	return s.portfolioRepo.PatchTechnology(ctx, technology)
 }
 
-func (r *PortfolioService) CreateProject(ctx context.Context, project *models.Project) (*models.Project, error) {
-	return r.portfolioRepo.CreateProject(ctx, project)
+func (s *PortfolioService) CreateProject(ctx context.Context, project *models.Project) (int64, error) {
+
+	return s.portfolioRepo.CreateProject(ctx, project)
 }
 
-func (r *PortfolioService) UpdateLanguage(ctx context.Context, language *models.Language) (*models.Language, error) {
-	return r.portfolioRepo.UpdateLanguage(ctx, language)
+func (s *PortfolioService) GetProject(ctx context.Context, id int64) (*models.Project, error) {
+	return s.portfolioRepo.GetProject(ctx, id)
 }
 
-func (r *PortfolioService) UpdateProject(ctx context.Context, project *models.Project) (*models.Project, error) {
-	return r.portfolioRepo.UpdateProject(ctx, project)
+func (s *PortfolioService) ListProjects(ctx context.Context, filter *models.ProjectFilter) ([]*models.Project, error) {
+	return s.portfolioRepo.ListProjects(ctx, filter)
 }
 
-func (r *PortfolioService) PatchLanguage(ctx context.Context, language *models.Language, languageUpdate *models.Language) (*models.Language, error) {
-	return r.portfolioRepo.PatchLanguage(ctx, language, languageUpdate)
+func (s *PortfolioService) DeleteProject(ctx context.Context, id int64) error {
+	return s.portfolioRepo.DeleteProject(ctx, id)
 }
 
-func (r *PortfolioService) PatchProject(ctx context.Context, project *models.Project, projectUpdate *models.Project) (*models.Project, error) {
-	return r.portfolioRepo.PatchProject(ctx, project, projectUpdate)
-}
-
-func (r *PortfolioService) DeleteLanguage(ctx context.Context, id int64) error {
-	return r.portfolioRepo.DeleteLanguage(ctx, id)
-}
-
-func (r *PortfolioService) DeleteProject(ctx context.Context, id int64) error {
-	return r.portfolioRepo.DeleteProject(ctx, id)
+func (s *PortfolioService) PatchProject(ctx context.Context, project *models.Project, projectUpdate *models.Project) error {
+	return s.portfolioRepo.PatchProject(ctx, project, projectUpdate)
 }
