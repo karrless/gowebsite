@@ -15,287 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/portfolio/languages": {
-            "get": {
-                "description": "Получить список всех языков программирования из базы данных",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Portfolio"
-                ],
-                "summary": "Список ЯП",
-                "responses": {
-                    "200": {
-                        "description": "Информация о языке",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Language"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {}
-                    }
-                }
-            },
-            "post": {
-                "description": "Создать язык программирования и записать в базу данных",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Portfolio"
-                ],
-                "summary": "Создать ЯП",
-                "parameters": [
-                    {
-                        "description": "Language name",
-                        "name": "name",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Language svg",
-                        "name": "svg",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Информация о языке",
-                        "schema": {
-                            "$ref": "#/definitions/models.Language"
-                        }
-                    },
-                    "400": {
-                        "description": "Невалидные данные",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/portfolio/languages/{id}": {
-            "get": {
-                "description": "Получить язык программирования из базы данных",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Portfolio"
-                ],
-                "summary": "Язык программирования",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Language ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Информация о языке",
-                        "schema": {
-                            "$ref": "#/definitions/models.Language"
-                        }
-                    },
-                    "400": {
-                        "description": "Невалидные данные",
-                        "schema": {}
-                    },
-                    "404": {
-                        "description": "Язык программирования не найден",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {}
-                    }
-                }
-            },
-            "put": {
-                "description": "Заменить язык программирования и записать в базу данных",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Portfolio"
-                ],
-                "summary": "Заменить ЯП",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Language ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Language name",
-                        "name": "name",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Language svg",
-                        "name": "svg",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Информация о языке",
-                        "schema": {
-                            "$ref": "#/definitions/models.Language"
-                        }
-                    },
-                    "400": {
-                        "description": "Невалидные данные",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {}
-                    }
-                }
-            },
-            "delete": {
-                "description": "Удалить язык программирования из базы данных",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Portfolio"
-                ],
-                "summary": "Удалить ЯП",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Language ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Сообщение о успешном удалении языка",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Невалидные данные",
-                        "schema": {}
-                    },
-                    "404": {
-                        "description": "ЯП не найден",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {}
-                    }
-                }
-            },
-            "patch": {
-                "description": "Обновить язык программирования и записать в базу данных",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Portfolio"
-                ],
-                "summary": "Обновить ЯП",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Language ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Language name",
-                        "name": "name",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Language svg",
-                        "name": "svg",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Информация о языке",
-                        "schema": {
-                            "$ref": "#/definitions/models.Language"
-                        }
-                    },
-                    "400": {
-                        "description": "Невалидные данные",
-                        "schema": {}
-                    },
-                    "404": {
-                        "description": "ЯП не найден",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {}
-                    }
-                }
-            }
-        },
         "/portfolio/projects": {
             "get": {
-                "description": "Получить список всех проектов из базы данных",
+                "description": "Get project list",
                 "consumes": [
                     "application/json"
                 ],
@@ -305,12 +27,16 @@ const docTemplate = `{
                 "tags": [
                     "Portfolio"
                 ],
-                "summary": "Список проектов",
+                "summary": "Project list",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
                         "description": "Language ID",
-                        "name": "lang_id",
+                        "name": "tech_id",
                         "in": "query"
                     },
                     {
@@ -358,7 +84,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Информация о проекте",
+                        "description": "Project",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -366,14 +92,18 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {}
+                    },
                     "500": {
-                        "description": "Внутренняя ошибка сервера",
+                        "description": "Internal error",
                         "schema": {}
                     }
                 }
             },
             "post": {
-                "description": "Создать проект и записать в базу данных",
+                "description": "Create project and write to database",
                 "consumes": [
                     "application/json"
                 ],
@@ -383,7 +113,7 @@ const docTemplate = `{
                 "tags": [
                     "Portfolio"
                 ],
-                "summary": "Создать Проект",
+                "summary": "Create Project",
                 "parameters": [
                     {
                         "description": "Project title",
@@ -449,43 +179,30 @@ const docTemplate = `{
                         }
                     },
                     {
-                        "description": "GitHub link",
-                        "name": "GHLink",
+                        "description": "Links",
+                        "name": "links",
                         "in": "body",
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Telegram link",
-                        "name": "TGLink",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "HTTP link",
-                        "name": "HTTPLink",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Информация о проекте",
+                        "description": "Project ID",
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "type": "integer"
                         }
                     },
                     "400": {
-                        "description": "Невалидные данные",
+                        "description": "Bad request",
                         "schema": {}
                     },
                     "500": {
-                        "description": "Внутренняя ошибка сервера",
+                        "description": "Internal error",
                         "schema": {}
                     }
                 }
@@ -493,7 +210,7 @@ const docTemplate = `{
         },
         "/portfolio/projects/{id}": {
             "get": {
-                "description": "Получить проект из базы данных",
+                "description": "Get project",
                 "consumes": [
                     "application/json"
                 ],
@@ -503,7 +220,7 @@ const docTemplate = `{
                 "tags": [
                     "Portfolio"
                 ],
-                "summary": "Проект",
+                "summary": "Project",
                 "parameters": [
                     {
                         "type": "integer",
@@ -515,152 +232,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Информация о проекте",
+                        "description": "Project",
                         "schema": {
                             "$ref": "#/definitions/models.Project"
                         }
                     },
                     "400": {
-                        "description": "Невалидные данные",
+                        "description": "Bad request",
                         "schema": {}
                     },
                     "404": {
-                        "description": "Проект не найден",
+                        "description": "Project nor found",
                         "schema": {}
                     },
                     "500": {
-                        "description": "Внутренняя ошибка сервера",
-                        "schema": {}
-                    }
-                }
-            },
-            "put": {
-                "description": "Заменить проект и записать в базу данных",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Portfolio"
-                ],
-                "summary": "Заменить Проект",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Project ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Project title",
-                        "name": "title",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Project version",
-                        "name": "version",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Project description",
-                        "name": "description",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Language ID",
-                        "name": "language_id",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Is active",
-                        "name": "isActive",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "description": "Is archived",
-                        "name": "isArchived",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "description": "Is developing",
-                        "name": "isDeveloping",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "description": "GitHub link",
-                        "name": "GHLink",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Telegram link",
-                        "name": "TGLink",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "HTTP link",
-                        "name": "HTTPLink",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Информация о проекте",
-                        "schema": {
-                            "$ref": "#/definitions/models.Project"
-                        }
-                    },
-                    "400": {
-                        "description": "Невалидные данные",
-                        "schema": {}
-                    },
-                    "500": {
-                        "description": "Внутренняя ошибка сервера",
+                        "description": "Internal error",
                         "schema": {}
                     }
                 }
             },
             "delete": {
-                "description": "Удалить проект из базы данных",
+                "description": "Delete project",
                 "consumes": [
                     "application/json"
                 ],
@@ -670,7 +262,7 @@ const docTemplate = `{
                 "tags": [
                     "Portfolio"
                 ],
-                "summary": "Удалить Проект",
+                "summary": "Delete Project",
                 "parameters": [
                     {
                         "type": "integer",
@@ -682,24 +274,24 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Сообщение о успешном удалении проекта",
+                        "description": "Message",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "400": {
-                        "description": "Невалидные данные",
+                        "description": "Bad request",
                         "schema": {}
                     },
                     "500": {
-                        "description": "Внутренняя ошибка сервера",
+                        "description": "Internal error",
                         "schema": {}
                     }
                 }
             },
             "patch": {
-                "description": "Обновить проект и записать в базу данных",
+                "description": "Update project",
                 "consumes": [
                     "application/json"
                 ],
@@ -709,7 +301,7 @@ const docTemplate = `{
                 "tags": [
                     "Portfolio"
                 ],
-                "summary": "Обновить Проект",
+                "summary": "Update Project",
                 "parameters": [
                     {
                         "type": "integer",
@@ -775,24 +367,8 @@ const docTemplate = `{
                         }
                     },
                     {
-                        "description": "GitHub link",
-                        "name": "GHLink",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Telegram link",
-                        "name": "TGLink",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "HTTP link",
-                        "name": "HTTPLink",
+                        "description": "Links",
+                        "name": "links",
                         "in": "body",
                         "schema": {
                             "type": "string"
@@ -801,21 +377,286 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Информация о проекте",
+                        "description": "Message",
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
-                        "description": "Невалидные данные",
+                        "description": "Bad request",
                         "schema": {}
                     },
                     "404": {
-                        "description": "Проект не найден",
+                        "description": "Technology not found",
                         "schema": {}
                     },
                     "500": {
-                        "description": "Внутренняя ошибка сервера",
+                        "description": "Internal error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/portfolio/techs": {
+            "get": {
+                "description": "Get technology list",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Technology list",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Technology ID",
+                        "name": "tech_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field",
+                        "name": "sort_field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort order",
+                        "name": "sort_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit of projects",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset of projects",
+                        "name": "Offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Technology",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Technology"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {}
+                    }
+                }
+            },
+            "post": {
+                "description": "Create technology and write to database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Create Technology",
+                "parameters": [
+                    {
+                        "description": "Technology name",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Technology svg",
+                        "name": "svg",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Technology ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/portfolio/techs/{id}": {
+            "get": {
+                "description": "Get technology",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Technology",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Technology ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Technology",
+                        "schema": {
+                            "$ref": "#/definitions/models.Technology"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Technology not found",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {}
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete technology",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Delete Technology",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Technology ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Technology not found",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {}
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update technology",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portfolio"
+                ],
+                "summary": "Update Technology",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Technology ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Technology name",
+                        "name": "name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Technology svg",
+                        "name": "svg",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Technology not found",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal error",
                         "schema": {}
                     }
                 }
@@ -823,32 +664,9 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Language": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "svg": {
-                    "type": "string"
-                }
-            }
-        },
         "models.Project": {
             "type": "object",
             "properties": {
-                "GHLink": {
-                    "type": "string"
-                },
-                "HTTPLink": {
-                    "type": "string"
-                },
-                "TGLink": {
-                    "type": "string"
-                },
                 "dscription": {
                     "type": "string"
                 },
@@ -864,16 +682,36 @@ const docTemplate = `{
                 "isDeveloping": {
                     "type": "boolean"
                 },
-                "language": {
-                    "$ref": "#/definitions/models.Language"
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
-                "languageID": {
-                    "type": "integer"
+                "technologies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Technology"
+                    }
                 },
                 "title": {
                     "type": "string"
                 },
                 "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Technology": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "svg": {
                     "type": "string"
                 }
             }

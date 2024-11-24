@@ -20,7 +20,7 @@ func NewPortfolioRepository(db *postgres.DB) *PortfolioRepository {
 	return &PortfolioRepository{db}
 }
 
-func (repo *PortfolioRepository) CreateTechonology(ctx context.Context, technology *models.Technology) (int64, error) {
+func (repo *PortfolioRepository) CreateTechnology(ctx context.Context, technology *models.Technology) (int64, error) {
 	var resultID int64
 	err := sq.Insert("techs").
 		Columns("name", "svg").
@@ -56,7 +56,9 @@ func (repo *PortfolioRepository) ListTechnologies(ctx context.Context, filter *m
 	var result []*models.Technology
 
 	query := sq.Select("*").From("techs").PlaceholderFormat(sq.Dollar)
-	query = query.Where(sq.Eq{"id": *filter.TechnologiesID})
+	if filter.TechnologiesID != nil {
+		query = query.Where(sq.Eq{"id": *filter.TechnologiesID})
+	}
 
 	if filter.SortField != "" {
 		if filter.SortOrder == "" {
@@ -103,9 +105,10 @@ func (repo *PortfolioRepository) DeleteTechnology(ctx context.Context, id int64)
 
 func (repo *PortfolioRepository) CreateProject(ctx context.Context, project *models.Project) (int64, error) {
 	var resultID int64
+	Links := pq.StringArray(project.Links)
 	err := sq.Insert("projects").
-		Columns("title", "version", "description", "is_active", "is_archived", "is_developing", "gh_link", "tg_link", "http_link").
-		Values(project.Title, project.Version, project.Description, project.IsActive, project.IsArchived, project.IsDeveloping, project.Links).
+		Columns("title", "version", "description", "is_active", "is_archived", "is_developing", "links").
+		Values(project.Title, project.Version, project.Description, project.IsActive, project.IsArchived, project.IsDeveloping, Links).
 		Suffix("RETURNING id").
 		PlaceholderFormat(sq.Dollar).
 		RunWith(repo.DB.DB).
@@ -116,8 +119,8 @@ func (repo *PortfolioRepository) CreateProject(ctx context.Context, project *mod
 
 	query := sq.Insert("project_tech").Columns("project_id", "tech_id").PlaceholderFormat(sq.Dollar)
 
-	for _, Technology := range project.Technologies {
-		query = query.Values(resultID, Technology.ID)
+	for _, technologyID := range project.TechnologyIDs {
+		query = query.Values(resultID, technologyID)
 	}
 
 	_, err = query.RunWith(repo.DB.DB).Exec()
@@ -147,10 +150,12 @@ func (repo *PortfolioRepository) GetProject(ctx context.Context, id int64) (*mod
 	result.Technologies = []*models.Technology{}
 	for rows.Next() {
 		var technology models.Technology
-		err := rows.Scan(&result.ID, &result.Title, &result.Version, &result.Description, &result.IsActive, &result.IsArchived, &result.IsDeveloping, &result.Links, &technology.ID, &technology.Name, &technology.Svg)
+		var links pq.StringArray
+		err := rows.Scan(&result.ID, &result.Title, &result.Version, &result.Description, &result.IsActive, &result.IsArchived, &result.IsDeveloping, &links, &technology.ID, &technology.Name, &technology.Svg)
 		if err != nil {
 			return nil, fmt.Errorf("repository.GetProject: %v", err)
 		}
+		result.Links = links
 		result.Technologies = append(result.Technologies, &technology)
 	}
 
@@ -250,6 +255,7 @@ func (repo *PortfolioRepository) DeleteProject(ctx context.Context, id int64) er
 		RunWith(repo.DB.DB).
 		Query()
 	if err != nil {
+
 		return fmt.Errorf("repository.DeleteProject: %v", err)
 	}
 	return nil
@@ -269,52 +275,62 @@ func (repo *PortfolioRepository) PatchTechnology(ctx context.Context, technology
 
 	_, err := query.RunWith(repo.DB.DB).Exec()
 	if err != nil {
+
 		return fmt.Errorf("repository.PatchTechnology: %v", err)
 	}
 	return nil
 }
 
-// TODO:
 func (repo *PortfolioRepository) PatchProject(ctx context.Context, project *models.Project, projectUpdate *models.Project) error {
 	query := sq.Update("projects").Where(sq.Eq{"id": project.ID}).PlaceholderFormat(sq.Dollar)
 
+	isNoUpdate := true
 	if projectUpdate.Title != "" {
+		isNoUpdate = false
 		query = query.Set("title", projectUpdate.Title)
 	}
 
 	if projectUpdate.Version != "" {
+		isNoUpdate = false
 		query = query.Set("version", projectUpdate.Version)
 	}
 
 	if projectUpdate.Description != "" {
+		isNoUpdate = false
 		query = query.Set("description", projectUpdate.Description)
 	}
 	if projectUpdate.IsActive.Valid {
+		isNoUpdate = false
 		query = query.Set("is_active", projectUpdate.IsActive)
 	}
 
 	if projectUpdate.IsArchived.Valid {
+		isNoUpdate = false
 		query = query.Set("is_archived", projectUpdate.IsArchived)
 	}
 
 	if projectUpdate.IsDeveloping.Valid {
+		isNoUpdate = false
 		query = query.Set("is_developing", projectUpdate.IsDeveloping)
 	}
 
 	if projectUpdate.Links != nil {
-		query = query.Set("gh_link", projectUpdate.Links)
+		isNoUpdate = false
+		Links := pq.StringArray(projectUpdate.Links)
+		query = query.Set("links", Links)
 	}
+	if !isNoUpdate {
+		_, err := query.RunWith(repo.DB.DB).Exec()
 
-	_, err := query.RunWith(repo.DB.DB).Exec()
-
-	if err != nil {
-		return fmt.Errorf("repository.UpdateProject: %v", err)
+		if err != nil {
+			return fmt.Errorf("repository.UpdateProject: %v", err)
+		}
 	}
 	deleteQuery := sq.Delete("project_tech").Where(sq.Eq{"project_id": project.ID}).PlaceholderFormat(sq.Dollar)
 	createQuery := sq.Insert("project_tech").Columns("project_id", "tech_id").PlaceholderFormat(sq.Dollar)
-	if projectUpdate.Technologies != nil {
-		for _, technology := range projectUpdate.Technologies {
-			createQuery = createQuery.Values(project.ID, technology.ID)
+	if projectUpdate.TechnologyIDs != nil {
+		for _, technologyID := range projectUpdate.TechnologyIDs {
+			createQuery = createQuery.Values(project.ID, technologyID)
 		}
 		_, err := deleteQuery.RunWith(repo.DB.DB).Exec()
 		if err != nil {

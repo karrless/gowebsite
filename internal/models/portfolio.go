@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/lib/pq"
 	"github.com/volatiletech/null/v9"
 )
 
@@ -13,15 +12,16 @@ type Technology struct {
 }
 
 type Project struct {
-	ID           int64          `form:"id" json:"id" db:"id"`
-	Title        string         `form:"title" json:"title" db:"title"`
-	Version      string         `form:"version" json:"version" db:"version"`
-	Description  string         `form:"dscription" json:"dscription" db:"description"`
-	Technologies []*Technology  `form:"techonolgies" json:"technologies" db:"-"`
-	IsActive     null.Bool      `form:"isActive" json:"isActive" db:"is_active" swaggertype:"boolean"`
-	IsArchived   null.Bool      `form:"isArchived" json:"isArchived" db:"is_archived" swaggertype:"boolean"`
-	IsDeveloping null.Bool      `form:"isDeveloping" json:"isDeveloping" db:"is_developing" swaggertype:"boolean"`
-	Links        pq.StringArray `form:"Links" json:"Links" db:"links" swaggertype:"[]string"`
+	ID            int64         `form:"id" json:"id" db:"id"`
+	Title         string        `form:"title" json:"title" db:"title"`
+	Version       string        `form:"version" json:"version" db:"version"`
+	Description   string        `form:"dscription" json:"dscription" db:"description"`
+	TechnologyIDs []int64       `form:"tech_id" json:"tech_id" db:"-"`
+	Technologies  []*Technology `form:"technologies" json:"technologies" db:"-"`
+	IsActive      null.Bool     `form:"isActive" json:"isActive" db:"is_active" swaggertype:"boolean"`
+	IsArchived    null.Bool     `form:"isArchived" json:"isArchived" db:"is_archived" swaggertype:"boolean"`
+	IsDeveloping  null.Bool     `form:"isDeveloping" json:"isDeveloping" db:"is_developing" swaggertype:"boolean"`
+	Links         []string      `form:"links" json:"links" db:"links"`
 }
 
 type ProjectFilter struct {
