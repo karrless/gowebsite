@@ -1,4 +1,0 @@
-ALTER TABLE IF EXISTS public.projects
-DROP COLUMN is_active BOOLEAN NOT NULL,
-is_archived BOOLEAN NOT NULL,
-is_developing BOOLEAN NOT NULL;
